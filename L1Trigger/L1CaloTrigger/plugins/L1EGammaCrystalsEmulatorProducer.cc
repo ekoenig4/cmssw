@@ -323,7 +323,8 @@ int get_insideEta(float eta, float centereta){
    if (eta-centereta<-1.0*size_cell/4) return 0;
    else if (eta-centereta<0) return 1;
    else if (eta-centereta<1.0*size_cell/4) return 2;
-   else return 3;
+   else if (eta-centereta<2.0*size_cell/4) return 3;
+   else return 4;
 }
 
 int get_insidePhi(float phi, float centerphi){
@@ -331,7 +332,8 @@ int get_insidePhi(float phi, float centerphi){
    if (phi-centerphi<-1*size_cell/4) return 0;
    else if (phi-centerphi<0) return 1;
    else if (phi-centerphi<1*size_cell/4) return 2;
-   else return 3;
+   else if (phi-centerphi<2*size_cell/4) return 3;
+   else return 4;
 }
 
 int convert_L2toL1_link(int link){
@@ -699,7 +701,7 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
       int brem_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
       int towerID_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
       int crystalID_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
-      //int insideCrystalID_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
+      int insideCrystalID_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
       int showerShape_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
       int showerShapeLooseTk_cluster_L1Card[4][3][36]; // 36 L1 cards send each 4 links with 3 clusters
       //float valueShowerShape_cluster_L1Card[4][3][36];
@@ -724,7 +726,7 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
                brem_cluster_L1Card[ii][jj][ll]=0;
                towerID_cluster_L1Card[ii][jj][ll]=0;
                crystalID_cluster_L1Card[ii][jj][ll]=0;
-               //insideCrystalID_cluster_L1Card[ii][jj][ll]=0;
+               insideCrystalID_cluster_L1Card[ii][jj][ll]=0;
 	       //valueShowerShape_cluster_L1Card[ii][jj][ll]=0;
 	    }
          }
@@ -904,8 +906,8 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
               else showerShapeLooseTk_cluster_L1Card[jj%4][jj/4][cc]=0;
 	      if (passes_photon(cluster_list_merged[cc][jj].cpt,cluster_list_merged[cc][jj].c2x2/cluster_list_merged[cc][jj].c2x5)) photonShowerShape_cluster_L1Card[jj%4][jj/4][cc]=1;
               else photonShowerShape_cluster_L1Card[jj%4][jj/4][cc]=0;
-              //insideCrystalID_cluster_L1Card[jj%4][jj/4][cc]=get_insideEta(cluster_list_merged[cc][jj].cWeightedEta,cluster_list_merged[cc][jj].craweta);
-              //insideCrystalID_cluster_L1Card[jj%4][jj/4][cc]+=4*get_insidePhi(cluster_list_merged[cc][jj].cWeightedPhi,cluster_list_merged[cc][jj].crawphi);
+              insideCrystalID_cluster_L1Card[jj%4][jj/4][cc]=get_insideEta(cluster_list_merged[cc][jj].cWeightedEta,cluster_list_merged[cc][jj].craweta);
+              insideCrystalID_cluster_L1Card[jj%4][jj/4][cc]+=4*get_insidePhi(cluster_list_merged[cc][jj].cWeightedPhi,cluster_list_merged[cc][jj].crawphi);
           }
 
           // Loop over calo ecal hits to get the ECAL towers. Take only hits that have not been used to make clusters
@@ -997,7 +999,7 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
       float brem_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
       int towerID_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
       int crystalID_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
-      //int insideCrystalID_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
+      int insideCrystalID_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
       float isolation_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
       float HE_cluster_L2Card[48][2][3]; // 3 L2 cards send each 48 links with 2 clusters
       int showerShape_cluster_L2Card[48][2][3];
@@ -1024,7 +1026,7 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
                brem_cluster_L2Card[ii][jj][ll]=0;
                towerID_cluster_L2Card[ii][jj][ll]=0;
                crystalID_cluster_L2Card[ii][jj][ll]=0;
-               //insideCrystalID_cluster_L2Card[ii][jj][ll]=0;
+               insideCrystalID_cluster_L2Card[ii][jj][ll]=0;
                isolation_cluster_L2Card[ii][jj][ll]=0;
                HE_cluster_L2Card[ii][jj][ll]=0;
                photonShowerShape_cluster_L2Card[ii][jj][ll]=0;
@@ -1124,7 +1126,7 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
 		  mc1.cbrem=brem_cluster_L1Card[jj%4][jj/4][ii];
                   mc1.ctowerid=towerID_cluster_L1Card[jj%4][jj/4][ii];
                   mc1.ccrystalid=crystalID_cluster_L1Card[jj%4][jj/4][ii];
-		  //mc1.cinsidecrystalid=insideCrystalID_cluster_L1Card[jj%4][jj/4][ii];
+		  mc1.cinsidecrystalid=insideCrystalID_cluster_L1Card[jj%4][jj/4][ii];
                   mc1.cshowershape=showerShape_cluster_L1Card[jj%4][jj/4][ii];
                   mc1.cshowershapeloosetk=showerShapeLooseTk_cluster_L1Card[jj%4][jj/4][ii];
                   //mc1.cvalueshowershape=valueShowerShape_cluster_L1Card[jj%4][jj/4][ii];
@@ -1206,7 +1208,7 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
       //Second let's fill the clusters
       for (int ii=0; ii<36; ++ii){ // The cluster list is still in the L1 like geometry
           for (unsigned int jj=0; jj<unsigned(cluster_list_L2[ii].size()) && jj<12; ++jj){
-              //insideCrystalID_cluster_L2Card[4*(ii%12)+jj%4][jj/4][ii/12]=cluster_list_L2[ii][jj].cinsidecrystalid;
+              insideCrystalID_cluster_L2Card[4*(ii%12)+jj%4][jj/4][ii/12]=cluster_list_L2[ii][jj].cinsidecrystalid;
               crystalID_cluster_L2Card[4*(ii%12)+jj%4][jj/4][ii/12]=cluster_list_L2[ii][jj].ccrystalid;
               towerID_cluster_L2Card[4*(ii%12)+jj%4][jj/4][ii/12]=cluster_list_L2[ii][jj].ctowerid;
               energy_cluster_L2Card[4*(ii%12)+jj%4][jj/4][ii/12]=cluster_list_L2[ii][jj].cpt;
@@ -1251,6 +1253,9 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
                     bool is_ss=(showerShape_cluster_L2Card[ii][jj][ll]==1);
                     bool is_photon=(photonShowerShape_cluster_L2Card[ii][jj][ll]==1) && is_ss && is_iso;
                     bool is_looseTkss=(showerShapeLooseTk_cluster_L2Card[ii][jj][ll]==1);
+		    int insideID = insideCrystalID_cluster_L2Card[ii][jj][ll];
+		    int peak_iEta = insideID & 0x3;
+		    int peak_iPhi = (insideID >> 2) & 0x3;
                     //bool is_he=passes_he(energy_cluster_L2Card[ii][jj][ll],HE_cluster_L2Card[ii][jj][ll]); //not used so far
                     // All the ID set to Standalone WP! Some dummy values for non calculated variables
                     l1slhc::L1EGCrystalCluster cluster(p4calibrated, energy_cluster_L2Card[ii][jj][ll], HE_cluster_L2Card[ii][jj][ll], isolation_cluster_L2Card[ii][jj][ll], centerhit.id,-1000, float(brem_cluster_L2Card[ii][jj][ll]),-1000,-1000, energy_cluster_L2Card[ii][jj][ll],-1, is_iso && is_ss, is_iso && is_ss, is_photon, is_iso && is_ss, is_looseTkiso && is_looseTkss, is_iso && is_ss); 
@@ -1262,6 +1267,8 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
                     params["trkMatchWP_isolation"] = is_looseTkiso;
                     params["TTiEta"] = getToweriEta_fromAbsoluteID( getTower_absoluteEtaID( p4calibrated.eta() ) );
                     params["TTiPhi"] = getToweriPhi_fromAbsoluteID( getTower_absolutePhiID( p4calibrated.phi() ) );
+		    params["peak_iEta"] = peak_iEta;
+		    params["peak_iPhi"] = peak_iPhi;
                     cluster.SetExperimentalParams(params);
                     L1EGXtalClusterEmulator->push_back(cluster);
 
@@ -1306,6 +1313,9 @@ void L1EGCrystalClusterEmulatorProducer::produce(edm::Event& iEvent, const edm::
 
                     l1CaloTower.n_l1eg++;
                     l1CaloTower.l1eg_tower_et += l1eg.pt();
+		    l1CaloTower.l1eg_peak_iEta = l1eg.GetExperimentalParam("peak_iEta");
+		    l1CaloTower.l1eg_peak_iPhi = l1eg.GetExperimentalParam("peak_iPhi");
+		    // cout << "Cluster Peak: " << l1CaloTower.l1eg_peak_iEta << " " << l1CaloTower.l1eg_peak_iPhi << endl;
                     if (l1CaloTower.n_l1eg > 1) continue; // Don't record L1EG quality info for subleading L1EG
                     l1CaloTower.l1eg_trkSS = l1eg.GetExperimentalParam("trkMatchWP_showerShape");
                     l1CaloTower.l1eg_trkIso = l1eg.GetExperimentalParam("trkMatchWP_isolation");

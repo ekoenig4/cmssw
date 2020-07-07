@@ -17,23 +17,25 @@
 
 class L1CaloTower
 {
-    public:
-        float ecal_tower_et = 0.0;
-        float hcal_tower_et = 0.0;
-        int tower_iPhi = -99;
-        int tower_iEta = -99;
-        float tower_phi = -99;
-        float tower_eta = -99;
+public:
+  float ecal_tower_et = 0.0;
+  float hcal_tower_et = 0.0;
+  int tower_iPhi = -99;
+  int tower_iEta = -99;
+  float tower_phi = -99;
+  float tower_eta = -99;
 
-        // L1EG info
-        float l1eg_tower_et = 0.0;
-        int n_l1eg = 0;
-        int l1eg_trkSS = 0;
-        int l1eg_trkIso = 0;
-        int l1eg_standaloneSS = 0;
-        int l1eg_standaloneIso = 0;
+  // L1EG info
+  float l1eg_tower_et = 0.0;
+  int n_l1eg = 0;
+  int l1eg_trkSS = 0;
+  int l1eg_trkIso = 0;
+  int l1eg_standaloneSS = 0;
+  int l1eg_standaloneIso = 0;
+  int l1eg_peak_iEta = -1;
+  int l1eg_peak_iPhi = -1;
 
-        bool isBarrel = false;
+  bool isBarrel = false;
 };
   
   
